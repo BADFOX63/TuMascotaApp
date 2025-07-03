@@ -33,6 +33,12 @@
         <!-- Pantalla Home -->
         <activity android:name=".HomeActivity" />
 
+        <!-- Registro de citas -->
+        <activity android:name=".AgendaCitaActivity" />
+
+        <!-- Mi Perfil -->
+        <activity android:name=".PerfilActivity" />
+
     </application>
 
 </manifest>
