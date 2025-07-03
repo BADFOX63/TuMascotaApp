@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1080730292190",
+    "project_id": "tumascotaapp",
+    "storage_bucket": "tumascotaapp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1080730292190:android:ff73f204c5318d657d574f",
+        "android_client_info": {
+          "package_name": "com.example.tumascotaapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCw0oaqNfHR1eT-eXW_jYVBi4D0B7xR96A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
