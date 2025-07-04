@@ -48,7 +48,17 @@
         <!--Calendario del  veterinario -->
         <activity android:name=".CalendarioVeterinarioActivity" />
 
+        <!--dias inactivos  -->
+        <activity android:name=".ListaDiasInactivosActivity" />
 
+        <!--Detalles de los dias inactivos  -->
+        <activity android:name=".DetalleDiaActivity" />
+
+        <!--Lista de las citas agendadas-->
+        <activity android:name=".ListaCitasActivity" />
+
+        <!--Detalle de citas  -->
+        <activity android:name=".DetalleCitaActivity" />
 
     </application>
 
