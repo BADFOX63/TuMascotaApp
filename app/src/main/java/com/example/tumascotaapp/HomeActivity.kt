@@ -86,6 +86,17 @@ class HomeActivity : ComponentActivity() {
 
                     Button(
                         onClick = {
+                            context.startActivity(Intent(context, AgregarMascotaActivity::class.java))
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = "Agregar Mascota")
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Button(
+                        onClick = {
                             context.startActivity(Intent(context, PerfilActivity::class.java))
                         },
                         modifier = Modifier.fillMaxWidth()

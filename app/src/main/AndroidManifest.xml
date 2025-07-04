@@ -36,8 +36,19 @@
         <!-- Registro de citas -->
         <activity android:name=".AgendaCitaActivity" />
 
+        <!--Calendario del  veterinario -->
+        <activity android:name=".AgregarMascotaActivity" />
+
         <!-- Mi Perfil -->
         <activity android:name=".PerfilActivity" />
+
+        <!-- Veterinario -->
+        <activity android:name=".VeterinarioActivity" />
+
+        <!--Calendario del  veterinario -->
+        <activity android:name=".CalendarioVeterinarioActivity" />
+
+
 
     </application>
 

@@ -27,8 +27,8 @@ class RegisterActivity : ComponentActivity() {
         firestore = FirebaseFirestore.getInstance()
 
         setContent {
-            RegisterScreen { nombre, apellidos, telefono, email, password, nombreMascota, tipoMascota, razaMascota ->
-                registerUser(nombre, apellidos, telefono, email, password, nombreMascota, tipoMascota, razaMascota)
+            RegisterScreen { nombre, apellidos, telefono, email, password ->
+                registerUser(nombre, apellidos, telefono, email, password)
             }
         }
     }
@@ -38,23 +38,20 @@ class RegisterActivity : ComponentActivity() {
         apellidos: String,
         telefono: String,
         email: String,
-        password: String,
-        nombreMascota: String,
-        tipoMascota: String,
-        razaMascota: String
+        password: String
     ) {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     val userId = auth.currentUser?.uid
+
                     val userMap = hashMapOf(
                         "nombre" to nombre,
                         "apellidos" to apellidos,
                         "telefono" to telefono,
                         "email" to email,
-                        "nombreMascota" to nombreMascota,
-                        "tipoMascota" to tipoMascota,
-                        "razaMascota" to razaMascota
+                        "rol" to "usuario",
+                        "mascotas" to emptyList<Map<String, String>>()  // Lista vacía de mascotas
                     )
 
                     userId?.let {
@@ -76,7 +73,7 @@ class RegisterActivity : ComponentActivity() {
     }
 
     @Composable
-    fun RegisterScreen(onRegister: (String, String, String, String, String, String, String, String) -> Unit) {
+    fun RegisterScreen(onRegister: (String, String, String, String, String) -> Unit) {
         val context = LocalContext.current
 
         var nombre by remember { mutableStateOf("") }
@@ -84,14 +81,6 @@ class RegisterActivity : ComponentActivity() {
         var telefono by remember { mutableStateOf("") }
         var email by remember { mutableStateOf("") }
         var password by remember { mutableStateOf("") }
-
-        var nombreMascota by remember { mutableStateOf("") }
-        var tipoMascota by remember { mutableStateOf("") }
-        var otroTipoMascota by remember { mutableStateOf("") }
-        var razaMascota by remember { mutableStateOf("") }
-
-        val tiposMascota = listOf("Perro", "Gato", "Ave", "Otro")
-        var expanded by remember { mutableStateOf(false) }
 
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -117,42 +106,10 @@ class RegisterActivity : ComponentActivity() {
                 OutlinedTextField(value = password, onValueChange = { password = it }, label = { Text("Contraseña") }, visualTransformation = PasswordVisualTransformation(), modifier = Modifier.fillMaxWidth())
 
                 Spacer(modifier = Modifier.height(20.dp))
-                OutlinedTextField(value = nombreMascota, onValueChange = { nombreMascota = it }, label = { Text("Nombre Mascota") }, modifier = Modifier.fillMaxWidth())
-                Spacer(modifier = Modifier.height(10.dp))
-
-                @OptIn(ExperimentalMaterial3Api::class) //habilitar las opciones experimentales
-                ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = !expanded }) {
-                    OutlinedTextField(
-                        value = tipoMascota,
-                        onValueChange = {},
-                        readOnly = true,
-                        label = { Text("Tipo de Mascota") },
-                        modifier = Modifier.menuAnchor().fillMaxWidth()
-                    )
-                    ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                        tiposMascota.forEach { tipo ->
-                            DropdownMenuItem(text = { Text(tipo) }, onClick = {
-                                tipoMascota = tipo
-                                expanded = false
-                            })
-                        }
-                    }
-                }
-
-                if (tipoMascota == "Otro") {
-                    Spacer(modifier = Modifier.height(10.dp))
-                    OutlinedTextField(value = otroTipoMascota, onValueChange = { otroTipoMascota = it }, label = { Text("¿Qué tipo?") }, modifier = Modifier.fillMaxWidth())
-                }
-
-                Spacer(modifier = Modifier.height(10.dp))
-                OutlinedTextField(value = razaMascota, onValueChange = { razaMascota = it }, label = { Text("Raza de la Mascota") }, modifier = Modifier.fillMaxWidth())
-
-                Spacer(modifier = Modifier.height(20.dp))
 
                 Button(
                     onClick = {
-                        val tipoFinal = if (tipoMascota == "Otro") otroTipoMascota else tipoMascota
-                        onRegister(nombre, apellidos, telefono, email, password, nombreMascota, tipoFinal, razaMascota)
+                        onRegister(nombre, apellidos, telefono, email, password)
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {

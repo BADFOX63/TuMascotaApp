@@ -34,17 +34,38 @@ class LoginActivity : ComponentActivity() {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    Toast.makeText(this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show()
-                    startActivity(Intent(this, HomeActivity::class.java))
-                    finish()
+                    val uid = auth.currentUser?.uid
+                    if (uid != null) {
+                        val firestore =
+                            com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                        firestore.collection("usuarios").document(uid).get()
+                            .addOnSuccessListener { document ->
+                                val rol = document.getString("rol") ?: "usuario"
+
+                                if (rol == "veterinario") {
+                                    startActivity(Intent(this, VeterinarioActivity::class.java))
+                                } else {
+                                    startActivity(Intent(this, HomeActivity::class.java))
+                                }
+
+                                finish()
+                            }
+                            .addOnFailureListener {
+                                Toast.makeText(this, "Error al obtener el rol", Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+                    } else {
+                        Toast.makeText(this, "Usuario no encontrado", Toast.LENGTH_SHORT).show()
+                    }
                 } else {
-                    Toast.makeText(this, "Error: ${task.exception?.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Error: ${task.exception?.message}", Toast.LENGTH_LONG)
+                        .show()
                 }
             }
     }
 }
 
-@Composable
+    @Composable
 fun LoginScreen(onLogin: (String, String) -> Unit) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }

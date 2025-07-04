@@ -64,6 +64,12 @@ dependencies {
     implementation("com.google.firebase:firebase-auth:22.3.1")
     implementation("com.google.firebase:firebase-firestore-ktx:24.10.3")
 
+    //activity_splash
+    implementation ("androidx.constraintlayout:constraintlayout:2.1.4")
+
+    //calendario
+    implementation ("com.kizitonwose.calendar:view:2.0.3")
+
     // Test
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
