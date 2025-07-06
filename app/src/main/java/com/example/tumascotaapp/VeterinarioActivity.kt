@@ -64,9 +64,22 @@ class VeterinarioActivity : ComponentActivity() {
                         },
                         modifier = Modifier
                             .fillMaxWidth()
+                            .fillMaxWidth()
                             .padding(vertical = 8.dp)
                     ) {
                         Text("Configurar Dias Inactivos")
+                    }
+
+                    Button(
+                        onClick = {
+                            startActivity(Intent(this@VeterinarioActivity, ListaServiciosActivity::class.java))
+                        },
+                        modifier = Modifier.
+                        fillMaxWidth()
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp)
+                    ) {
+                        Text("Servicios")
                     }
 
                     Button(

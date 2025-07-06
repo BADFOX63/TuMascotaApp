@@ -33,7 +33,7 @@ class HomeActivity : ComponentActivity() {
         val currentUser = auth.currentUser
         var nombre by remember { mutableStateOf("Usuario") }
 
-        // 🔑 Traer el nombre desde Firestore
+        //Traer el nombre desde Firestore
         LaunchedEffect(currentUser?.uid) {
             currentUser?.uid?.let { uid ->
                 db.collection("usuarios").document(uid).get()

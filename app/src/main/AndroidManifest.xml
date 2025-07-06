@@ -60,6 +60,15 @@
         <!--Detalle de citas  -->
         <activity android:name=".DetalleCitaActivity" />
 
+        <!--Agregar servicios  -->
+        <activity android:name=".AgregarServicioActivity" />
+
+        <!--Editar servicios  -->
+        <activity android:name=".EditarServicioActivity" />
+
+        <!--Lista de servicios  -->
+        <activity android:name=".ListaServiciosActivity" />
+
     </application>
 
 </manifest>
