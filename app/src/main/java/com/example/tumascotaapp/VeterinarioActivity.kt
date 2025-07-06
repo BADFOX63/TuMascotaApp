@@ -84,6 +84,18 @@ class VeterinarioActivity : ComponentActivity() {
 
                     Button(
                         onClick = {
+                            val intent = Intent(this@VeterinarioActivity, ListaHistorialesActivity::class.java)
+                            startActivity(intent)
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp)
+                    ) {
+                        Text("Historiales Clínicos")
+                    }
+
+                    Button(
+                        onClick = {
                             FirebaseAuth.getInstance().signOut()
                             startActivity(Intent(this@VeterinarioActivity, LoginActivity::class.java))
                             finish()

@@ -60,6 +60,9 @@
         <!--Detalle de citas  -->
         <activity android:name=".DetalleCitaActivity" />
 
+        <!--Registrar historial clinico  -->
+        <activity android:name=".RegistrarHistorialActivity" />
+
         <!--Agregar servicios  -->
         <activity android:name=".AgregarServicioActivity" />
 
@@ -68,6 +71,12 @@
 
         <!--Lista de servicios  -->
         <activity android:name=".ListaServiciosActivity" />
+
+        <!--Lista de Historiales clinicos  -->
+        <activity android:name=".ListaHistorialesActivity" />
+
+        <!--Lista de Historiales clininicos para usuarios  -->
+        <activity android:name=".ListaHistorialesMascotaActivity" />
 
     </application>
 

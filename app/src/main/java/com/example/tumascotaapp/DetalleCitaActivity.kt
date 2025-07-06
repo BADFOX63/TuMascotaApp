@@ -33,6 +33,12 @@ class DetalleCitaActivity : ComponentActivity() {
         val duenioTelefono = intent.getStringExtra("duenioTelefono") ?: ""
         val motivo = intent.getStringExtra("motivo") ?: "Sin motivo"
 
+        val servicio = intent.getStringExtra("servicio") ?: "No especificado"
+        val precioInicial = intent.getDoubleExtra("precioBase", 0.0)
+
+        val usuarioId = intent.getStringExtra("usuarioId") ?: ""
+        val usuarioEmail = intent.getStringExtra("usuarioEmail") ?: ""        
+
         setContent {
             DetalleCitaScreen(
                 citaId = citaId,
@@ -41,7 +47,11 @@ class DetalleCitaActivity : ComponentActivity() {
                 hora = hora,
                 duenioNombre = duenioNombre,
                 duenioTelefono = duenioTelefono,
-                motivo = motivo
+                motivo = motivo,
+                servicio = servicio,
+                precioInicial = precioInicial,
+                usuarioId = usuarioId,
+                usuarioEmail = usuarioEmail
             )
         }
     }
@@ -55,11 +65,14 @@ class DetalleCitaActivity : ComponentActivity() {
         hora: String,
         duenioNombre: String,
         duenioTelefono: String,
-        motivo: String
+        motivo: String,
+        servicio: String,
+        precioInicial: Double,
+        usuarioId: String,
+        usuarioEmail: String
     ) {
         val context = LocalContext.current
-        val usuarioId = auth.currentUser?.uid
-        val veterinarioId = usuarioId
+        val veterinarioId = auth.currentUser?.uid ?: return
 
         Scaffold(
             topBar = {
@@ -78,24 +91,38 @@ class DetalleCitaActivity : ComponentActivity() {
                     Text("📅 Fecha: $fecha")
                     Text("⏰ Hora: $hora")
                     Text("📝 Motivo: $motivo")
+                    Text("🔧 Servicio: $servicio")
+                    Text("💰 Precio Base: ${String.format("%,.0f", precioInicial)} COP")
+
                     Spacer(modifier = Modifier.height(8.dp))
                     Text("👤 Dueño: $duenioNombre")
                     Text("📞 Teléfono: $duenioTelefono")
+                    Text("📧 Correo: $usuarioEmail")
 
                     Spacer(modifier = Modifier.height(24.dp))
 
                     Button(
                         onClick = {
-                            if (usuarioId != null && veterinarioId != null) {
-                                cancelarCita(
-                                    usuarioId,
-                                    veterinarioId,
-                                    citaId,
-                                    fecha,
-                                    hora,
-                                    context
-                                )
+                            val intent = Intent(context, RegistrarHistorialActivity::class.java).apply {
+                                putExtra("citaId", citaId)
+                                putExtra("usuarioId", usuarioId)
+                                putExtra("usuarioEmail", usuarioEmail)
+                                putExtra("mascota", mascota)
+                                putExtra("servicio", servicio)
+                                putExtra("precio_inicial", precioInicial)
                             }
+                            context.startActivity(intent)
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Registrar Historial Clínico")
+                    }
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    Button(
+                        onClick = {
+                            cancelarCita(usuarioId, veterinarioId, citaId, fecha, hora, context)
                         },
                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
                     ) {

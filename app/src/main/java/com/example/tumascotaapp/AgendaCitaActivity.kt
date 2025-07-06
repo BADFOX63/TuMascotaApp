@@ -308,6 +308,8 @@ class AgendaCitaActivity : ComponentActivity() {
             .addOnSuccessListener { userSnapshot ->
                 val nombreUsuario = userSnapshot.getString("nombre") ?: "Sin nombre"
                 val telefonoUsuario = userSnapshot.getString("telefono") ?: "Sin teléfono"
+                val emailUsuario = userSnapshot.getString("email") ?: auth.currentUser?.email ?: "Sin correo"
+
 
                 val cita = hashMapOf(
                     "mascota" to mascota,
@@ -318,6 +320,7 @@ class AgendaCitaActivity : ComponentActivity() {
                     "precioBase" to servicio.costo,
                     "duenioNombre" to nombreUsuario,
                     "duenioTelefono" to telefonoUsuario,
+                    "usuarioEmail" to emailUsuario,
                     "usuarioId" to uid
                 )
 

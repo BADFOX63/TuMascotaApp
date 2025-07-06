@@ -21,14 +21,19 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
 
+
 data class Cita(
     val id: String = "",
     val mascota: String = "",
     val fecha: String = "",
     val hora: String = "",
     val motivo: String = "",
+    val servicio: String = "",
+    val precioBase: Double = 0.0,
     val duenioNombre: String = "",
-    val duenioTelefono: String = ""
+    val duenioTelefono: String = "",
+    val usuarioId: String = "",
+    val usuarioEmail: String = ""
 )
 
 class ListaCitasActivity : ComponentActivity() {
@@ -52,10 +57,9 @@ class ListaCitasActivity : ComponentActivity() {
         val listaCitas = remember { mutableStateListOf<Cita>() }
         var fechaSeleccionada by remember { mutableStateOf(LocalDate.now()) }
         val dateFormatter = DateTimeFormatter.ISO_DATE
-
         val fechaFormateada = fechaSeleccionada.format(dateFormatter)
 
-        // Cargar todas las citas una sola vez
+        //Cargar citas
         LaunchedEffect(veterinarioId) {
             veterinarioId?.let {
                 firestore.collection("veterinarios").document(it).collection("citas")
@@ -67,9 +71,13 @@ class ListaCitasActivity : ComponentActivity() {
                                 mascota = doc.getString("mascota") ?: "",
                                 fecha = doc.getString("fecha") ?: "",
                                 hora = doc.getString("hora") ?: "",
-                                motivo = doc.getString("motivo") ?:"",
+                                motivo = doc.getString("motivo") ?: "",
+                                servicio = doc.getString("servicio") ?: "No especificado",
+                                precioBase = doc.getDouble("precioBase") ?: 0.0,
                                 duenioNombre = doc.getString("duenioNombre") ?: "",
-                                duenioTelefono = doc.getString("duenioTelefono") ?: ""
+                                duenioTelefono = doc.getString("duenioTelefono") ?: "",
+                                usuarioId = doc.getString("usuarioId") ?: "",
+                                usuarioEmail = doc.getString("usuarioEmail") ?: ""
                             )
                         }
                         listaCitas.clear()
@@ -82,9 +90,7 @@ class ListaCitasActivity : ComponentActivity() {
         }
 
         Scaffold(
-            topBar = {
-                TopAppBar(title = { Text("Citas Agendadas") })
-            },
+            topBar = { TopAppBar(title = { Text("Citas Agendadas") }) },
             content = { padding ->
                 Column(
                     modifier = Modifier
@@ -92,8 +98,6 @@ class ListaCitasActivity : ComponentActivity() {
                         .padding(padding)
                         .padding(16.dp)
                 ) {
-
-                    // Botón para elegir la fecha
                     Button(onClick = {
                         val calendar = Calendar.getInstance()
                         DatePickerDialog(
@@ -106,7 +110,7 @@ class ListaCitasActivity : ComponentActivity() {
                             fechaSeleccionada.dayOfMonth
                         ).show()
                     }) {
-                        Text("Ver citas de: ${fechaFormateada}")
+                        Text("Ver citas de: $fechaFormateada")
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -115,7 +119,7 @@ class ListaCitasActivity : ComponentActivity() {
 
                     if (citasFiltradas.isEmpty()) {
                         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            Text("No hay citas para ${fechaFormateada}.")
+                            Text("No hay citas para $fechaFormateada.")
                         }
                     } else {
                         LazyColumn {
@@ -125,15 +129,20 @@ class ListaCitasActivity : ComponentActivity() {
                                         .fillMaxWidth()
                                         .padding(vertical = 8.dp)
                                         .clickable {
-                                            val intent = Intent(context, DetalleCitaActivity::class.java)
-                                            intent.putExtra("citaId", cita.id)
-                                            intent.putExtra("mascota", cita.mascota)
-                                            intent.putExtra("fecha", cita.fecha)
-                                            intent.putExtra("hora", cita.hora)
-                                            intent.putExtra("motivo", cita.motivo)
-                                            intent.putExtra("duenioNombre", cita.duenioNombre)
-                                            intent.putExtra("duenioTelefono", cita.duenioTelefono)
-                                            startActivity(intent)
+                                            val intent = Intent(context, DetalleCitaActivity::class.java).apply {
+                                                putExtra("citaId", cita.id)
+                                                putExtra("mascota", cita.mascota)
+                                                putExtra("fecha", cita.fecha)
+                                                putExtra("hora", cita.hora)
+                                                putExtra("motivo", cita.motivo)
+                                                putExtra("servicio", cita.servicio)
+                                                putExtra("precioBase", cita.precioBase)
+                                                putExtra("duenioNombre", cita.duenioNombre)
+                                                putExtra("duenioTelefono", cita.duenioTelefono)
+                                                putExtra("usuarioId", cita.usuarioId)
+                                                putExtra("usuarioEmail", cita.usuarioEmail)
+                                            }
+                                            context.startActivity(intent)
                                         },
                                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                                 ) {
@@ -141,6 +150,8 @@ class ListaCitasActivity : ComponentActivity() {
                                         Text("🐾 Mascota: ${cita.mascota}", style = MaterialTheme.typography.titleMedium)
                                         Text("📅 Fecha: ${cita.fecha}")
                                         Text("⏰ Hora: ${cita.hora}")
+                                        Text("🔧 Servicio: ${cita.servicio}")
+                                        Text("💰 Precio: $${String.format("%,.0f", cita.precioBase)} COP")
                                         Text("👤 Dueño: ${cita.duenioNombre}")
                                         Text("📞 Teléfono: ${cita.duenioTelefono}")
                                     }
