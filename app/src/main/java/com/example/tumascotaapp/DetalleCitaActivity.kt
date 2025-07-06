@@ -37,7 +37,7 @@ class DetalleCitaActivity : ComponentActivity() {
         val precioInicial = intent.getDoubleExtra("precioBase", 0.0)
 
         val usuarioId = intent.getStringExtra("usuarioId") ?: ""
-        val usuarioEmail = intent.getStringExtra("usuarioEmail") ?: ""        
+        val usuarioEmail = intent.getStringExtra("usuarioEmail") ?: ""
 
         setContent {
             DetalleCitaScreen(
@@ -110,6 +110,10 @@ class DetalleCitaActivity : ComponentActivity() {
                                 putExtra("mascota", mascota)
                                 putExtra("servicio", servicio)
                                 putExtra("precio_inicial", precioInicial)
+                                putExtra("fecha", fecha)  
+                                putExtra("hora", hora)
+                                putExtra("duenioNombre", duenioNombre)
+                                putExtra("duenioTelefono", duenioTelefono)
                             }
                             context.startActivity(intent)
                         },

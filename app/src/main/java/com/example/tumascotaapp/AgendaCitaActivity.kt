@@ -46,7 +46,19 @@ class AgendaCitaActivity : ComponentActivity() {
         var mensajeEstado by remember { mutableStateOf("") }
         var horasNoDisponibles by remember { mutableStateOf<List<String>>(emptyList()) }
 
-        val listaTodasLasHoras = listOf("08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00")
+        val listaTodasLasHoras = listOf(
+            "08:00",
+            "09:00",
+            "10:00",
+            "11:00",
+            "12:00",
+            "13:00",
+            "14:00",
+            "15:00",
+            "16:00",
+            "17:00",
+            "18:00"
+        )
 
         var horaSeleccionada by remember { mutableStateOf("") }
         var horaDropdownExpanded by remember { mutableStateOf(false) }
@@ -74,7 +86,8 @@ class AgendaCitaActivity : ComponentActivity() {
                 .get()
                 .addOnSuccessListener { doc ->
                     val estado = doc.getString("estado") ?: "activo"
-                    val horasDesactivadas = doc.get("horasDesactivadas") as? List<String> ?: emptyList()
+                    val horasDesactivadas =
+                        doc.get("horasDesactivadas") as? List<String> ?: emptyList()
 
                     estadoFecha = estado
                     horasNoDisponibles = horasDesactivadas
@@ -173,7 +186,16 @@ class AgendaCitaActivity : ComponentActivity() {
                         ) {
                             listaServicios.forEach { servicio ->
                                 DropdownMenuItem(
-                                    text = { Text("${servicio.nombre} - $${String.format("%,.0f", servicio.costo)}") },
+                                    text = {
+                                        Text(
+                                            "${servicio.nombre} - $${
+                                                String.format(
+                                                    "%,.0f",
+                                                    servicio.costo
+                                                )
+                                            }"
+                                        )
+                                    },
                                     onClick = {
                                         servicioSeleccionado = servicio
                                         servicioDropdownExpanded = false
@@ -186,7 +208,12 @@ class AgendaCitaActivity : ComponentActivity() {
                     if (servicioSeleccionado != null) {
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "💡 Precio base: $${String.format("%,.0f", servicioSeleccionado!!.costo)} COP (puede variar según características de la mascota)",
+                            text = "💡 Precio base: $${
+                                String.format(
+                                    "%,.0f",
+                                    servicioSeleccionado!!.costo
+                                )
+                            } COP (puede variar según características de la mascota)",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.primary
                         )
@@ -210,7 +237,11 @@ class AgendaCitaActivity : ComponentActivity() {
                             { _, year, month, dayOfMonth ->
                                 val fecha = LocalDate.of(year, month + 1, dayOfMonth)
                                 if (fecha.isBefore(today)) {
-                                    Toast.makeText(context, "No puedes agendar en días pasados", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(
+                                        context,
+                                        "No puedes agendar en días pasados",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 } else {
                                     fechaSeleccionada = fecha
                                     cargarDisponibilidad(fecha)
@@ -232,12 +263,14 @@ class AgendaCitaActivity : ComponentActivity() {
                     Spacer(modifier = Modifier.height(16.dp))
 
                     if (fechaSeleccionada != null && estadoFecha == "activo") {
-                        val horasFiltradas = listaTodasLasHoras.filterNot { horasNoDisponibles.contains(it) }.filter { hora ->
-                            if (fechaSeleccionada == today) {
-                                val horaInt = hora.substring(0, 2).toInt()
-                                horaInt > currentHour
-                            } else true
-                        }
+                        val horasFiltradas =
+                            listaTodasLasHoras.filterNot { horasNoDisponibles.contains(it) }
+                                .filter { hora ->
+                                    if (fechaSeleccionada == today) {
+                                        val horaInt = hora.substring(0, 2).toInt()
+                                        horaInt > currentHour
+                                    } else true
+                                }
 
                         if (horasFiltradas.isNotEmpty()) {
                             ExposedDropdownMenuBox(
@@ -268,7 +301,10 @@ class AgendaCitaActivity : ComponentActivity() {
                                 }
                             }
                         } else {
-                            Text("No hay horas disponibles", color = MaterialTheme.colorScheme.error)
+                            Text(
+                                "No hay horas disponibles",
+                                color = MaterialTheme.colorScheme.error
+                            )
                         }
                     }
 
@@ -278,14 +314,29 @@ class AgendaCitaActivity : ComponentActivity() {
                         onClick = {
                             if (mascotaSeleccionada.isNotEmpty() && fechaSeleccionada != null && horaSeleccionada.isNotEmpty() && motivo.isNotEmpty() && servicioSeleccionado != null) {
                                 if (estadoFecha == "activo") {
-                                    guardarCita(uid, mascotaSeleccionada, fechaSeleccionada!!, horaSeleccionada, motivo, servicioSeleccionado!!) {
+                                    guardarCita(
+                                        uid,
+                                        mascotaSeleccionada,
+                                        fechaSeleccionada!!,
+                                        horaSeleccionada,
+                                        motivo,
+                                        servicioSeleccionado!!
+                                    ) {
                                         cargarDisponibilidad(fechaSeleccionada!!)
                                     }
                                 } else {
-                                    Toast.makeText(context, "La fecha seleccionada no está disponible", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(
+                                        context,
+                                        "La fecha seleccionada no está disponible",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
                             } else {
-                                Toast.makeText(context, "Completa todos los campos", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    context,
+                                    "Completa todos los campos",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                         },
                         modifier = Modifier.fillMaxWidth(),
@@ -298,7 +349,15 @@ class AgendaCitaActivity : ComponentActivity() {
         )
     }
 
-    private fun guardarCita(uid: String?, mascota: String, fecha: LocalDate, hora: String, motivo: String, servicio: Servicio, onSuccess: () -> Unit) {
+    private fun guardarCita(
+        uid: String?,
+        mascota: String,
+        fecha: LocalDate,
+        hora: String,
+        motivo: String,
+        servicio: Servicio,
+        onSuccess: () -> Unit
+    ) {
         if (uid == null) return
 
         val fechaKey = fecha.format(dateFormatter)
@@ -308,8 +367,8 @@ class AgendaCitaActivity : ComponentActivity() {
             .addOnSuccessListener { userSnapshot ->
                 val nombreUsuario = userSnapshot.getString("nombre") ?: "Sin nombre"
                 val telefonoUsuario = userSnapshot.getString("telefono") ?: "Sin teléfono"
-                val emailUsuario = userSnapshot.getString("email") ?: auth.currentUser?.email ?: "Sin correo"
-
+                val emailUsuario =
+                    userSnapshot.getString("email") ?: auth.currentUser?.email ?: "Sin correo"
 
                 val cita = hashMapOf(
                     "mascota" to mascota,
@@ -321,7 +380,8 @@ class AgendaCitaActivity : ComponentActivity() {
                     "duenioNombre" to nombreUsuario,
                     "duenioTelefono" to telefonoUsuario,
                     "usuarioEmail" to emailUsuario,
-                    "usuarioId" to uid
+                    "usuarioId" to uid,
+                    "fechaAgendada" to System.currentTimeMillis() // ⏰ Aquí se guarda la fecha y hora actual
                 )
 
                 firestore.collection("usuarios").document(uid)
@@ -337,14 +397,24 @@ class AgendaCitaActivity : ComponentActivity() {
 
                         firestore.runTransaction { transaction ->
                             val snapshot = transaction.get(fechaRef)
-                            val horasActuales = snapshot.get("horasDesactivadas") as? List<String> ?: emptyList()
-                            val nuevasHoras = horasActuales.toMutableSet().apply { add(hora) }.toList()
-                            transaction.set(fechaRef, mapOf("estado" to "activo", "horasDesactivadas" to nuevasHoras))
+                            val horasActuales =
+                                snapshot.get("horasDesactivadas") as? List<String> ?: emptyList()
+                            val nuevasHoras =
+                                horasActuales.toMutableSet().apply { add(hora) }.toList()
+                            transaction.set(
+                                fechaRef,
+                                mapOf("estado" to "activo", "horasDesactivadas" to nuevasHoras)
+                            )
                         }.addOnSuccessListener {
-                            Toast.makeText(this, "Cita guardada y hora bloqueada", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                this,
+                                "Cita guardada y hora bloqueada",
+                                Toast.LENGTH_SHORT
+                            ).show()
                             onSuccess()
                         }.addOnFailureListener {
-                            Toast.makeText(this, "Error al bloquear hora", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this, "Error al bloquear hora", Toast.LENGTH_SHORT)
+                                .show()
                         }
                     }
                     .addOnFailureListener {

@@ -20,7 +20,9 @@ data class HistorialMascota(
     val diagnostico: String = "",
     val tratamiento: String = "",
     val observaciones: String = "",
-    val precioFinal: Double = 0.0
+    val precioFinal: Double = 0.0,
+    val fechaCita: String = "",
+    val horaCita: String = ""
 )
 
 class ListaHistorialesMascotaActivity : ComponentActivity() {
@@ -58,7 +60,9 @@ class ListaHistorialesMascotaActivity : ComponentActivity() {
                             diagnostico = doc.getString("diagnostico") ?: "",
                             tratamiento = doc.getString("tratamiento") ?: "",
                             observaciones = doc.getString("observaciones") ?: "",
-                            precioFinal = doc.getDouble("precioFinal") ?: 0.0
+                            precioFinal = doc.getDouble("precioFinal") ?: 0.0,
+                            fechaCita = doc.getString("fechaCita") ?: "",
+                            horaCita = doc.getString("horaCita") ?: ""
                         )
                     }
                     historiales.clear()
@@ -90,6 +94,7 @@ class ListaHistorialesMascotaActivity : ComponentActivity() {
                                 ) {
                                     Column(modifier = Modifier.padding(16.dp)) {
                                         Text("🔧 Servicio: ${historial.servicio}", style = MaterialTheme.typography.titleMedium)
+                                        Text("📅 Fecha: ${historial.fechaCita} ⏰ ${historial.horaCita}")
                                         Text("🩺 Diagnóstico: ${historial.diagnostico}")
                                         Text("💊 Tratamiento: ${historial.tratamiento}")
                                         if (historial.observaciones.isNotBlank()) {

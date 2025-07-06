@@ -27,7 +27,9 @@ data class HistorialClinico(
     val tratamiento: String = "",
     val precioFinal: Double = 0.0,
     val usuarioId: String = "",
-    val timestamp: Long = 0L
+    val timestamp: Long = 0L,
+    val fechaCita: String = "",
+    val horaCita: String = ""
 )
 
 class ListaHistorialesActivity : ComponentActivity() {
@@ -70,7 +72,9 @@ class ListaHistorialesActivity : ComponentActivity() {
                             tratamiento = doc.getString("tratamiento") ?: "",
                             precioFinal = doc.getDouble("precioFinal") ?: 0.0,
                             usuarioId = doc.getString("usuarioId") ?: "",
-                            timestamp = doc.getLong("timestamp") ?: 0L
+                            timestamp = doc.getLong("timestamp") ?: 0L,
+                            fechaCita = doc.getString("fechaCita") ?: "",
+                            horaCita = doc.getString("horaCita") ?: ""
                         )
                     }
                     historiales.clear()
@@ -125,6 +129,7 @@ class ListaHistorialesActivity : ComponentActivity() {
                                         Text("👤 Dueño: ${historial.duenioNombre}")
                                         Text("📧 Correo: ${historial.usuarioEmail}")
                                         Text("📞 Teléfono: ${historial.duenioTelefono}")
+                                        Text("📅 Fecha: ${historial.fechaCita} ⏰ ${historial.horaCita}")
                                         Text("💰 Precio Final: $${String.format("%,.0f", historial.precioFinal)} COP")
                                     }
                                 }
@@ -132,7 +137,6 @@ class ListaHistorialesActivity : ComponentActivity() {
                         }
                     }
 
-                    // Diálogo detalle con botón eliminar
                     historialSeleccionado?.let { historial ->
                         AlertDialog(
                             onDismissRequest = { historialSeleccionado = null },
@@ -144,6 +148,7 @@ class ListaHistorialesActivity : ComponentActivity() {
                                     Text("📧 Correo: ${historial.usuarioEmail}")
                                     Text("📞 Teléfono: ${historial.duenioTelefono}")
                                     Text("🔧 Servicio: ${historial.servicio}")
+                                    Text("📅 Fecha: ${historial.fechaCita} ⏰ ${historial.horaCita}")
                                     Text("🩺 Diagnóstico: ${historial.diagnostico}")
                                     Text("💊 Tratamiento: ${historial.tratamiento}")
                                     Text("💰 Precio Final: $${String.format("%,.0f", historial.precioFinal)} COP")
@@ -165,7 +170,6 @@ class ListaHistorialesActivity : ComponentActivity() {
                         )
                     }
 
-                    // Diálogo Confirmación Eliminar
                     if (showEliminarConfirmacion && historialSeleccionado != null) {
                         AlertDialog(
                             onDismissRequest = { showEliminarConfirmacion = false },
@@ -198,12 +202,10 @@ class ListaHistorialesActivity : ComponentActivity() {
     private fun eliminarHistorial(historial: HistorialClinico, onDeleted: () -> Unit) {
         val veterinarioId = auth.currentUser?.uid ?: return
 
-        // Eliminar de historial del veterinario
         firestore.collection("veterinarios").document(veterinarioId)
             .collection("historiales").document(historial.id)
             .delete()
 
-        // Eliminar de historial del usuario/mascota
         firestore.collection("usuarios").document(historial.usuarioId)
             .collection("mascotas").document(historial.mascotaNombre)
             .collection("historiales")

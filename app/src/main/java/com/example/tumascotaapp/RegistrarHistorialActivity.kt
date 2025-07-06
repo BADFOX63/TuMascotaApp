@@ -25,10 +25,13 @@ class RegistrarHistorialActivity : ComponentActivity() {
         val usuarioId = intent.getStringExtra("usuarioId") ?: ""
         val usuarioEmail = intent.getStringExtra("usuarioEmail") ?: ""
         val duenioNombre = intent.getStringExtra("duenioNombre") ?: ""
-        val duenioTelefono = intent.getStringExtra("duenioTelefono") ?: "" 
+        val duenioTelefono = intent.getStringExtra("duenioTelefono") ?: ""
         val mascotaNombre = intent.getStringExtra("mascota") ?: ""
         val servicio = intent.getStringExtra("servicio") ?: ""
         val precioBase = intent.getDoubleExtra("precio_inicial", 0.0)
+
+        val fecha = intent.getStringExtra("fecha") ?: "Sin fecha"
+        val hora = intent.getStringExtra("hora") ?: "Sin hora"
 
         setContent {
             RegistrarHistorialScreen(
@@ -39,7 +42,9 @@ class RegistrarHistorialActivity : ComponentActivity() {
                 duenioTelefono = duenioTelefono,
                 mascotaNombre = mascotaNombre,
                 servicio = servicio,
-                precioBase = precioBase
+                precioBase = precioBase,
+                fecha = fecha,
+                hora = hora
             )
         }
     }
@@ -54,7 +59,9 @@ class RegistrarHistorialActivity : ComponentActivity() {
         duenioTelefono: String,
         mascotaNombre: String,
         servicio: String,
-        precioBase: Double
+        precioBase: Double,
+        fecha: String,
+        hora: String
     ) {
         val context = LocalContext.current
         val veterinarioId = auth.currentUser?.uid ?: return
@@ -79,6 +86,8 @@ class RegistrarHistorialActivity : ComponentActivity() {
                     Text("📞 Teléfono: $duenioTelefono")
                     Text("🔧 Servicio: $servicio")
                     Text("💰 Precio Base: ${String.format("%,.0f", precioBase)} COP")
+                    Text("📅 Fecha: $fecha")
+                    Text("⏰ Hora: $hora")
 
                     Spacer(modifier = Modifier.height(16.dp))
 
@@ -129,6 +138,8 @@ class RegistrarHistorialActivity : ComponentActivity() {
                                     mascotaNombre,
                                     servicio,
                                     precioBase,
+                                    fecha,
+                                    hora,
                                     diagnostico,
                                     tratamiento,
                                     observaciones,
@@ -158,6 +169,8 @@ class RegistrarHistorialActivity : ComponentActivity() {
         mascotaNombre: String,
         servicio: String,
         precioBase: Double,
+        fecha: String,          
+        hora: String,
         diagnostico: String,
         tratamiento: String,
         observaciones: String,
@@ -169,6 +182,8 @@ class RegistrarHistorialActivity : ComponentActivity() {
             "mascotaNombre" to mascotaNombre,
             "servicio" to servicio,
             "precioBase" to precioBase,
+            "fechaCita" to fecha,
+            "horaCita" to hora,
             "diagnostico" to diagnostico,
             "tratamiento" to tratamiento,
             "observaciones" to observaciones,
@@ -195,4 +210,5 @@ class RegistrarHistorialActivity : ComponentActivity() {
                 Toast.makeText(context, "Error al guardar historial", Toast.LENGTH_SHORT).show()
             }
     }
+
 }
